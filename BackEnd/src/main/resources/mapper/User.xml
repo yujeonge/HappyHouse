@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.ssafy.happyhouse.model.mapper.UserInfoMapper">
+	<!-- String 두개를 받아오는 방법을 몰라서 Map으로 변경함 -->
+	<!-- 이전에는 id로 검색을해서 받아온 pw와 입력한 pw를 비교해서 같다면 userinfo를 리턴하게 되어있었음 -->
+	<!-- 아이디 비번이 틀리다면 null값 받아오는건 똑같은듯?? -->
+	<select id="login" parameterType="map" resultType="UserInfoDto">
+		select *
+		from
+		userInfo
+		where id=#{id} and password=#{password}
+	</select>
+
+	<insert id="regist" parameterType="UserInfoDto">
+		insert into userInfo values
+		(#{id},#{password},#{name},#{email},#{tel},#{que},#{ans},now())
+	</insert>
+
+	<update id="update" parameterType="UserInfoDto">
+		update userInfo set
+		password=#{password}, email=#{email}, tel=#{tel}, name=#{name},que=#{que}, ans=#{ans} where
+		id = #{id}
+	</update>
+
+	<delete id="deleteI" parameterType="String">
+		delete from interestArea
+		where id= #{id}
+	</delete>
+	<delete id="deleteU" parameterType="String">
+		delete from userInfo where
+		id=#{id}
+	</delete>
+
+	<select id="searchById" parameterType="String"
+		resultType="UserInfoDto">
+		select * from userInfo where id=#{id}
+	</select>
+
+	<select id="searchAll" resultType="UserInfoDto">
+		select * from userInfo
+	</select>
+
+	<select id="exist" parameterType="map" resultType="UserInfoDto">
+		select *
+		from
+		userInfo
+		where id=#{id} and que = #{que} and ans=#{ans}
+	</select>
+
+	<select id="dailyReg" resultType="AdminDto">
+		select substring(regtime,1,10) as regdate,COUNT(id) as cnt
+		from userinfo
+		group by substring(regtime,1,10)
+		order by substring(regtime,1,10) desc
+		limit 7;
+	</select>
+
+	<!-- <select id="idCheck" parameterType="string" resultType="int"> select 
+		count(userid) from ssafy_member where userid = #{userid} </select> -->
+
+</mapper>

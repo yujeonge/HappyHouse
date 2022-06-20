@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.QusMapper">
+
+   <!-- 목록 -->
+   <select id="list" resultType="QnADto">
+      select q.articleno, q.username, q.subject, q.content, q.regtime, a.content as reply
+      from qusboard q left join ansboard a
+        on q.articleno = a.articleno
+      order by q.articleno desc
+   </select>
+
+   <!-- 등록 -->
+   <insert id="regist" parameterType="QusDto">
+      insert into qusboard(
+      subject, username, content
+      ) values (
+      #{subject}, #{username}, #{content}
+      )
+   </insert>
+
+   <!-- 수정 -->
+   <update id="update" parameterType="QusDto">
+      update qusboard
+      set subject = #{subject},
+      username = #{username},
+      content = #{content}
+      where articleno = #{articleno}
+   </update>
+
+   <!-- 삭제 -->
+   <delete id="delete" parameterType="int">
+      delete
+      from qusboard
+      where articleno = #{articleno}
+   </delete>
+
+   <!-- 검색 -->
+   <select id="search" parameterType="String" resultType="QnADto">
+      select q.articleno, q.username, q.subject, q.content, q.regtime, a.content as reply
+      from qusboard q left join ansboard a
+      on q.articleno = a.articleno
+      where q.content like concat('%', #{keyword}, '%') 
+      or q.username like concat('%', #{keyword2}, '%') 
+      or q.subject like concat('%', #{keyword3}, '%')
+      order by q.articleno desc
+   </select>
+
+   <!-- 상세조회 -->
+   <select id="detail" resultType="QusDto">
+      select articleno, username,
+      subject, content, regtime
+      from qusboard
+      where articleno = #{articleno}
+   </select>
+
+
+</mapper>
